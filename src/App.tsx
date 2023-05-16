@@ -4,6 +4,7 @@ import { getSurplus, splitLg, splitMd, splitSm } from './lib/splitter'
 import { WalletSize } from './types/walletSize'
 import { AddingForm, Input, Select } from './components/AddingForm'
 import { ItemList } from './components/ItemList'
+import { MemberCard, MemberCardProps } from './components/Member/MemberCard'
 
 type Member = {
   name: string
@@ -18,26 +19,6 @@ const sizeOptions: { value: string; label: string }[] = [
   { value: 'lg', label: '多め' },
   { value: 'sm', label: '少なめ' },
 ]
-type MemberCardProps = {
-  name: string
-  size: WalletSize
-  payment: number
-}
-function MemberCard({ name, size, payment }: MemberCardProps): JSX.Element {
-  return (
-    <div className='flex h-12 flex-row items-center justify-between'>
-      <span>{name}</span>
-      <span
-        className={
-          size === 'lg' ? 'text-4xl' : size === 'md' ? 'text-2xl' : 'text-sm'
-        }
-      >
-        👛
-      </span>
-      <span>¥{payment.toLocaleString()}</span>
-    </div>
-  )
-}
 function App(): JSX.Element {
   const [receipts, setReceipts] = useState<Receipt[]>([])
   const [members, setMembers] = useState<Member[]>([])
