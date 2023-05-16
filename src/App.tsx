@@ -1,8 +1,8 @@
 import React, { FormEventHandler, useCallback } from 'react'
 import { useState } from 'react'
-import { getSurplus, splitLg, splitMd, splitSm, surplus } from './lib/splitter'
+import { getSurplus, splitLg, splitMd, splitSm } from './lib/splitter'
+import { WalletSize } from './types/walletSize'
 
-type WalletSize = 'lg' | 'md' | 'sm'
 type Member = {
   name: string
   size: WalletSize
@@ -39,11 +39,11 @@ function App(): JSX.Element {
   )
 
   const sum = receipts.map((v) => v.money).reduce((a, b) => a + b, 0)
-  const sizeList = members.map(v => v.size)
-  const sm = splitSm(sum, sizeList) 
+  const sizeList = members.map((v) => v.size)
+  const sm = splitSm(sum, sizeList)
   const md = splitMd(sum, sizeList)
   const lg = splitLg(sum, sizeList)
-  const surplus = getSurplus(sum, sizeList) 
+  const surplus = getSurplus(sum, sizeList)
 
   return (
     <div className='space-y-3 py-2'>

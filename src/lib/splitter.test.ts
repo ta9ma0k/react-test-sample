@@ -1,6 +1,7 @@
-import { WalletSizeList, splitLg, splitMd, splitSm, getSurplus } from './splitter'
+import { WalletSize } from '../types/walletSize'
+import { splitLg, splitMd, splitSm, getSurplus } from './splitter'
 
-const args: WalletSizeList = ['lg', 'md', 'sm']
+const args: WalletSize[] = ['lg', 'md', 'sm']
 describe('lg:md:sm=4:2:1で割り勘すること', () => {
   test('splitSm,smの値を返すこと', () => {
     expect(splitSm(7000, args)).toBe(1000)
