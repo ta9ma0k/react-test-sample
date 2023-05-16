@@ -4,16 +4,19 @@ const SPLIT_SIZE = {
   MEDIUM: 2,
   SMALL: 1,
 }
-export function splitSm(bill: number, sizeList: WalletSize[]): number {
-  return calculate(bill, sizeList, SPLIT_SIZE.SMALL)
-}
 
-export function splitMd(bill: number, sizeList: WalletSize[]): number {
-  return calculate(bill, sizeList, SPLIT_SIZE.MEDIUM)
-}
-
-export function splitLg(bill: number, sizeList: WalletSize[]): number {
-  return calculate(bill, sizeList, SPLIT_SIZE.LARGE)
+export function split(
+  size: WalletSize,
+  bill: number,
+  sizeList: WalletSize[]
+): number {
+  if (size === 'lg') {
+    return calculate(bill, sizeList, SPLIT_SIZE.LARGE)
+  } else if (size === 'md') {
+    return calculate(bill, sizeList, SPLIT_SIZE.MEDIUM)
+  } else {
+    return calculate(bill, sizeList, SPLIT_SIZE.SMALL)
+  }
 }
 
 function calculate(bill: number, sizeList: WalletSize[], size: number): number {

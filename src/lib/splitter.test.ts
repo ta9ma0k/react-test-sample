@@ -1,22 +1,23 @@
 import { WalletSize } from '../types/walletSize'
-import { splitLg, splitMd, splitSm, getSurplus } from './splitter'
+import { split, getSurplus } from './splitter'
 
 const args: WalletSize[] = ['lg', 'md', 'sm']
 describe('lg:md:sm=4:2:1で割り勘すること', () => {
   test('splitSm,smの値を返すこと', () => {
-    expect(splitSm(7000, args)).toBe(1000)
+    expect(split('sm', 7000, args)).toBe(1000)
   })
   test('splitMd,mdの値を返すこと', () => {
-    expect(splitMd(7000, args)).toBe(2000)
+    expect(split('md', 7000, args)).toBe(2000)
   })
   test('splitLg,lgの値を返すこと', () => {
-    expect(splitLg(7000, args)).toBe(4000)
+    expect(split('lg', 7000, args)).toBe(4000)
   })
-  test('割り勘する人がいないときは0を返すこと', () => {
-    expect(splitSm(1000, [])).toBe(0)
-    expect(splitMd(1000, [])).toBe(0)
-    expect(splitLg(1000, [])).toBe(0)
-  })
+  test.each(['sm', 'md', 'lg'])(
+    '%s:割り勘する人がいないときは0を返すこと',
+    (size) => {
+      expect(split(size as WalletSize, 1000, [])).toBe(0)
+    }
+  )
 })
 
 describe('割り切れない値を余りとして返すこと', () => {

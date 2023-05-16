@@ -1,6 +1,6 @@
 import { FormEventHandler, useCallback } from 'react'
 import { useState } from 'react'
-import { getSurplus, splitLg, splitMd, splitSm } from './lib/splitter'
+import { getSurplus, split } from './lib/splitter'
 import { WalletSize } from './types/walletSize'
 import { AddingForm, Input, Select } from './components/AddingForm'
 import { ItemList } from './components/ItemList'
@@ -54,12 +54,7 @@ function App(): JSX.Element {
     (v) =>
       ({
         ...v,
-        payment:
-          v.size === 'lg'
-            ? splitLg(sum, sizeList)
-            : v.size === 'md'
-            ? splitMd(sum, sizeList)
-            : splitSm(sum, sizeList),
+        payment: split(v.size, sum, sizeList),
       } as MemberCardProps)
   )
   const surplus = getSurplus(sum, sizeList)
