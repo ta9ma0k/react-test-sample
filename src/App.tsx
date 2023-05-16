@@ -2,6 +2,7 @@ import React, { FormEventHandler, useCallback } from 'react'
 import { useState } from 'react'
 import { getSurplus, splitLg, splitMd, splitSm } from './lib/splitter'
 import { WalletSize } from './types/walletSize'
+import { AddingForm, Input, Select } from './components/AddingForm'
 
 type Member = {
   name: string
@@ -11,6 +12,11 @@ type Receipt = {
   title: string
   money: number
 }
+const sizeOptions: { value: string; label: string }[] = [
+  { value: 'md', label: '普通' },
+  { value: 'lg', label: '多め' },
+  { value: 'sm', label: '少なめ' },
+]
 function App(): JSX.Element {
   const [receipts, setReceipts] = useState<Receipt[]>([])
   const [members, setMembers] = useState<Member[]>([])
@@ -49,30 +55,14 @@ function App(): JSX.Element {
     <div className='space-y-3 py-2'>
       <div className='flex flex-row justify-center space-x-4'>
         <div className='w-1/3 space-y-2'>
-          <form onSubmit={handleOnAddMember} className='space-y-1'>
-            <fieldset className='flex flex-col'>
-              <label className='text-sm'>名前</label>
-              <input
-                type='text'
-                name='name'
-                className='rounded-md border-2 px-2'
-              />
-            </fieldset>
-            <fieldset className='flex flex-col'>
-              <label className='text-sm'>どれくらい払う？</label>
-              <select className='rounded-md border-2' name='size'>
-                <option value='md'>普通</option>
-                <option value='lg'>多め</option>
-                <option value='sm'>少なめ</option>
-              </select>
-            </fieldset>
-            <button
-              type='submit'
-              className='rounded-md border-2 px-2 hover:cursor-pointer'
-            >
-              追加
-            </button>
-          </form>
+          <AddingForm onAdd={handleOnAddMember}>
+            <Input name='name' label='名前' />
+            <Select
+              name='size'
+              label='どれくらい払う？'
+              options={sizeOptions}
+            />
+          </AddingForm>
           <ul className='space-y-2'>
             {members.map((v, i) => (
               <React.Fragment key={`members-${i}`}>
@@ -106,30 +96,10 @@ function App(): JSX.Element {
           </ul>
         </div>
         <div className='w-1/3 space-y-2'>
-          <form onSubmit={handleOnAddRecipt} className='space-y-1'>
-            <fieldset className='flex flex-col'>
-              <label className='text-sm'>件名</label>
-              <input
-                type='text'
-                name='title'
-                className='rounded-md border-2 px-2'
-              />
-            </fieldset>
-            <fieldset className='flex flex-col'>
-              <label className='text-sm'>金額</label>
-              <input
-                type='number'
-                name='money'
-                className='rounded-md border-2 px-2'
-              />
-            </fieldset>
-            <button
-              type='submit'
-              className='rounded-md border-2 px-2 hover:cursor-pointer'
-            >
-              追加
-            </button>
-          </form>
+          <AddingForm onAdd={handleOnAddRecipt}>
+            <Input name='title' label='件名' />
+            <Input name='money' label='金額' />
+          </AddingForm>
           <ul className='space-y-2'>
             {receipts.map((v, i) => (
               <React.Fragment key={`receipt-${i}`}>
