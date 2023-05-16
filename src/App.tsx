@@ -1,8 +1,9 @@
-import React, { FormEventHandler, useCallback } from 'react'
+import { FormEventHandler, useCallback } from 'react'
 import { useState } from 'react'
 import { getSurplus, splitLg, splitMd, splitSm } from './lib/splitter'
 import { WalletSize } from './types/walletSize'
 import { AddingForm, Input, Select } from './components/AddingForm'
+import { ItemList } from './components/ItemList'
 
 type Member = {
   name: string
@@ -17,6 +18,26 @@ const sizeOptions: { value: string; label: string }[] = [
   { value: 'lg', label: '多め' },
   { value: 'sm', label: '少なめ' },
 ]
+type MemberCardProps = {
+  name: string
+  size: WalletSize
+  payment: number
+}
+function MemberCard({ name, size, payment }: MemberCardProps): JSX.Element {
+  return (
+    <div className='flex h-12 flex-row items-center justify-between'>
+      <span>{name}</span>
+      <span
+        className={
+          size === 'lg' ? 'text-4xl' : size === 'md' ? 'text-2xl' : 'text-sm'
+        }
+      >
+        👛
+      </span>
+      <span>¥{payment.toLocaleString()}</span>
+    </div>
+  )
+}
 function App(): JSX.Element {
   const [receipts, setReceipts] = useState<Receipt[]>([])
   const [members, setMembers] = useState<Member[]>([])
@@ -46,9 +67,18 @@ function App(): JSX.Element {
 
   const sum = receipts.map((v) => v.money).reduce((a, b) => a + b, 0)
   const sizeList = members.map((v) => v.size)
-  const sm = splitSm(sum, sizeList)
-  const md = splitMd(sum, sizeList)
-  const lg = splitLg(sum, sizeList)
+  const results = members.map(
+    (v) =>
+      ({
+        ...v,
+        payment:
+          v.size === 'lg'
+            ? splitLg(sum, sizeList)
+            : v.size === 'md'
+            ? splitMd(sum, sizeList)
+            : splitSm(sum, sizeList),
+      } as MemberCardProps)
+  )
   const surplus = getSurplus(sum, sizeList)
 
   return (
@@ -63,52 +93,24 @@ function App(): JSX.Element {
               options={sizeOptions}
             />
           </AddingForm>
-          <ul className='space-y-2'>
-            {members.map((v, i) => (
-              <React.Fragment key={`members-${i}`}>
-                <li className='rounded-md border-2 px-4 py-2'>
-                  <div className='flex h-12 flex-row items-center justify-between'>
-                    <span>{v.name}</span>
-                    <span
-                      className={
-                        v.size === 'lg'
-                          ? 'text-4xl'
-                          : v.size === 'md'
-                          ? 'text-2xl'
-                          : 'text-sm'
-                      }
-                    >
-                      👛
-                    </span>
-                    <span>
-                      ¥
-                      {(v.size === 'lg'
-                        ? lg
-                        : v.size === 'md'
-                        ? md
-                        : sm
-                      ).toLocaleString()}
-                    </span>
-                  </div>
-                </li>
-              </React.Fragment>
-            ))}
-          </ul>
+          <ItemList<MemberCardProps> items={results}>
+            {({ name, size, payment }) => (
+              <MemberCard name={name} size={size} payment={payment} />
+            )}
+          </ItemList>
         </div>
         <div className='w-1/3 space-y-2'>
           <AddingForm onAdd={handleOnAddRecipt}>
             <Input name='title' label='件名' />
             <Input name='money' label='金額' />
           </AddingForm>
-          <ul className='space-y-2'>
-            {receipts.map((v, i) => (
-              <React.Fragment key={`receipt-${i}`}>
-                <li className='rounded-md border-2 px-4 py-2'>
-                  {v.title} : ¥{v.money.toLocaleString()}
-                </li>
-              </React.Fragment>
-            ))}
-          </ul>
+          <ItemList<Receipt> items={receipts}>
+            {(item) => (
+              <div>
+                {item.title} : ¥{item.money.toLocaleString()}
+              </div>
+            )}
+          </ItemList>
         </div>
       </div>
       <div className='text-center'>余り : ¥{surplus.toLocaleString()}</div>
