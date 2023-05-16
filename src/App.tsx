@@ -1,5 +1,6 @@
 import React, { FormEventHandler, useCallback } from 'react'
 import { useState } from 'react'
+import { getSurplus, splitLg, splitMd, splitSm, surplus } from './lib/splitter'
 
 type WalletSize = 'lg' | 'md' | 'sm'
 type Member = {
@@ -38,13 +39,11 @@ function App(): JSX.Element {
   )
 
   const sum = receipts.map((v) => v.money).reduce((a, b) => a + b, 0)
-  const divider = members
-    .map((v) => (v.size === 'lg' ? 4 : v.size === 'md' ? 2 : 1))
-    .reduce((a, b) => a + b, 0)
-  const sm = divider === 0 ? 0 : Math.floor(sum / divider)
-  const md = sm * 2
-  const lg = sm * 4
-  const surplus = divider === 0 ? 0 : sum % divider
+  const sizeList = members.map(v => v.size)
+  const sm = splitSm(sum, sizeList) 
+  const md = splitMd(sum, sizeList)
+  const lg = splitLg(sum, sizeList)
+  const surplus = getSurplus(sum, sizeList) 
 
   return (
     <div className='space-y-3 py-2'>
