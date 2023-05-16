@@ -6,6 +6,7 @@ import { AddingForm, Input, Select } from './components/AddingForm'
 import { ItemList } from './components/ItemList'
 import { MemberCard, MemberCardProps } from './components/Member/MemberCard'
 import { ReceiptCard } from './components/Receipt/ReceiptCard'
+import { TwoContentsLayout } from './components/Layout/TwoContents'
 
 type Member = {
   name: string
@@ -64,35 +65,29 @@ function App(): JSX.Element {
   const surplus = getSurplus(sum, sizeList)
 
   return (
-    <div className='space-y-3 py-2'>
-      <div className='flex flex-row justify-center space-x-4'>
-        <div className='w-1/3 space-y-2'>
-          <AddingForm onAdd={handleOnAddMember}>
-            <Input name='name' label='名前' />
-            <Select
-              name='size'
-              label='どれくらい払う？'
-              options={sizeOptions}
-            />
-          </AddingForm>
-          <ItemList<MemberCardProps> items={results}>
-            {({ name, size, payment }) => (
-              <MemberCard name={name} size={size} payment={payment} />
-            )}
-          </ItemList>
-        </div>
-        <div className='w-1/3 space-y-2'>
-          <AddingForm onAdd={handleOnAddRecipt}>
-            <Input name='title' label='件名' />
-            <Input name='money' label='金額' />
-          </AddingForm>
-          <ItemList<Receipt> items={receipts}>
-            {(item) => <ReceiptCard title={item.title} amount={item.money} />}
-          </ItemList>
-        </div>
-      </div>
+    <TwoContentsLayout>
+      <>
+        <AddingForm onAdd={handleOnAddMember}>
+          <Input name='name' label='名前' />
+          <Select name='size' label='どれくらい払う？' options={sizeOptions} />
+        </AddingForm>
+        <ItemList<MemberCardProps> items={results}>
+          {({ name, size, payment }) => (
+            <MemberCard name={name} size={size} payment={payment} />
+          )}
+        </ItemList>
+      </>
+      <>
+        <AddingForm onAdd={handleOnAddRecipt}>
+          <Input name='title' label='件名' />
+          <Input name='money' label='金額' />
+        </AddingForm>
+        <ItemList<Receipt> items={receipts}>
+          {(item) => <ReceiptCard title={item.title} amount={item.money} />}
+        </ItemList>
+      </>
       <ReceiptCard title='余り' amount={surplus} />
-    </div>
+    </TwoContentsLayout>
   )
 }
 
