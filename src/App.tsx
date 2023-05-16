@@ -5,6 +5,7 @@ import { WalletSize } from './types/walletSize'
 import { AddingForm, Input, Select } from './components/AddingForm'
 import { ItemList } from './components/ItemList'
 import { MemberCard, MemberCardProps } from './components/Member/MemberCard'
+import { ReceiptCard } from './components/Receipt/ReceiptCard'
 
 type Member = {
   name: string
@@ -86,15 +87,11 @@ function App(): JSX.Element {
             <Input name='money' label='金額' />
           </AddingForm>
           <ItemList<Receipt> items={receipts}>
-            {(item) => (
-              <div>
-                {item.title} : ¥{item.money.toLocaleString()}
-              </div>
-            )}
+            {(item) => <ReceiptCard title={item.title} amount={item.money} />}
           </ItemList>
         </div>
       </div>
-      <div className='text-center'>余り : ¥{surplus.toLocaleString()}</div>
+      <ReceiptCard title='余り' amount={surplus} />
     </div>
   )
 }
