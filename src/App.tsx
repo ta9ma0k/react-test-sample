@@ -1,5 +1,4 @@
 import { FormEventHandler, useCallback } from 'react'
-import { useState } from 'react'
 import { getSurplus, split } from './lib/splitter'
 import { WalletSize } from './types/walletSize'
 import { AddingForm, Input, Select } from './components/AddingForm'
@@ -8,18 +7,15 @@ import { MemberCard, MemberCardProps } from './components/Member/MemberCard'
 import { ReceiptCard } from './components/Receipt/ReceiptCard'
 import { TwoContentsLayout } from './components/Layout/TwoContents'
 import { useMembers } from './hooks/useMembers'
+import { useReceipts } from './hooks/useReceipts'
 
-type Receipt = {
-  title: string
-  money: number
-}
 const sizeOptions: { value: string; label: string }[] = [
   { value: 'md', label: '普通' },
   { value: 'lg', label: '多め' },
   { value: 'sm', label: '少なめ' },
 ]
 function App(): JSX.Element {
-  const [receipts, setReceipts] = useState<Receipt[]>([])
+  const [{ receipts, sum }, { addReceipt }] = useReceipts()
   const [{ members, sizeList }, { addMember }] = useMembers()
 
   const handleOnAddMember: FormEventHandler<HTMLFormElement> = useCallback(
@@ -40,12 +36,11 @@ function App(): JSX.Element {
       const { value: title } = (e.target as any).title as { value: string }
       const { value: money } = (e.target as any).money as { value: string }
 
-      setReceipts((s) => [...s, { title, money: Number(money) }])
+      addReceipt({ title, money: Number(money) })
     },
     []
   )
 
-  const sum = receipts.map((v) => v.money).reduce((a, b) => a + b, 0)
   const results = members.map(
     (v) =>
       ({
