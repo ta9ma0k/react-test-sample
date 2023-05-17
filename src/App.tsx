@@ -8,6 +8,7 @@ import { ReceiptCard } from './components/Receipt/ReceiptCard'
 import { TwoContentsLayout } from './components/Layout/TwoContents'
 import { useMembers } from './hooks/useMembers'
 import { useReceipts } from './hooks/useReceipts'
+import { Receipt } from './types/receipt'
 
 const sizeOptions: { value: string; label: string }[] = [
   { value: 'md', label: '普通' },
