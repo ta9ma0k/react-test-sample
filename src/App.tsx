@@ -7,11 +7,8 @@ import { ItemList } from './components/ItemList'
 import { MemberCard, MemberCardProps } from './components/Member/MemberCard'
 import { ReceiptCard } from './components/Receipt/ReceiptCard'
 import { TwoContentsLayout } from './components/Layout/TwoContents'
+import { useMembers } from './hooks/useMembers'
 
-type Member = {
-  name: string
-  size: WalletSize
-}
 type Receipt = {
   title: string
   money: number
@@ -23,7 +20,7 @@ const sizeOptions: { value: string; label: string }[] = [
 ]
 function App(): JSX.Element {
   const [receipts, setReceipts] = useState<Receipt[]>([])
-  const [members, setMembers] = useState<Member[]>([])
+  const [{ members, sizeList }, { addMember }] = useMembers()
 
   const handleOnAddMember: FormEventHandler<HTMLFormElement> = useCallback(
     (e) => {
@@ -32,9 +29,9 @@ function App(): JSX.Element {
       const { value: size } = (e.target as any).size as {
         value: WalletSize
       }
-      setMembers((s) => [...s, { name, size }])
+      addMember({ name, size })
     },
-    []
+    [addMember]
   )
 
   const handleOnAddRecipt: FormEventHandler<HTMLFormElement> = useCallback(
@@ -49,7 +46,6 @@ function App(): JSX.Element {
   )
 
   const sum = receipts.map((v) => v.money).reduce((a, b) => a + b, 0)
-  const sizeList = members.map((v) => v.size)
   const results = members.map(
     (v) =>
       ({
