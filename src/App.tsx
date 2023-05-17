@@ -38,7 +38,7 @@ function App(): JSX.Element {
 
       addReceipt({ title, money: Number(money) })
     },
-    []
+    [addReceipt]
   )
 
   const results = members.map(
